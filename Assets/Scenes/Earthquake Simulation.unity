@@ -556,7 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 565c1c3197844994886fac57e0c1f1a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shakeDistance: 5
+  shakeDistance: 1
   speed: 1
 --- !u!54 &643431327
 Rigidbody:
