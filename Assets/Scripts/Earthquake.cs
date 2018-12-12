@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Earthquake : MonoBehaviour {
 
+    //recommended: keep shakeDistance at 1 and increase speed for increaseingly intense earthquakes
     [Range(0.0f, 10.0f)][SerializeField] private float shakeDistance = 1.0f;
     [Range(0.0f, 10.0f)] [SerializeField] private float speed = 3.0f;
     private Rigidbody rb;
