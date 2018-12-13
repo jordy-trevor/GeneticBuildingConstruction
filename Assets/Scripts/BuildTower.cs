@@ -19,10 +19,12 @@ public class BuildTower : MonoBehaviour {
     [SerializeField] GameObject buildingBlock3;
     [SerializeField] int buildingBlock3Count = 0;
 
-    //private GeneticAlgorithm<char> ga;
-    //private System.Random random;
     //create a data structure to store how the pieces were placed
     List<Block> blockList = new List<Block>();
+
+     private GeneticAlgorithm<List<Block>> ga = null;
+    //  private System.Random random;
+
     
 	// Use this for initialization
 	void Start () {
@@ -85,8 +87,36 @@ public class BuildTower : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		Debug.Log(FitnessFunction(blockList).ToString());
 	}
+
+//function: FitnessFunction(int index)
+//input: int index - the index of blockList in ga Population
+//output: float score - a fitness score of the current blockList which the sum of the heights
+    private float FitnessFunction(int index){
+        float score = 0;
+        DNA<List<Block>> dna = ga.Population[index];
+
+        foreach(Block block in dna.Genes[index]){
+            score += block.obj.transform.position.y;
+        }
+        return score;
+    }
+
+
+    //function: FitnessFunction(List<Block> blockList)
+//input: List<Block> blockList - a list of blocks
+//output: float score - a fitness score of the current blockList which the sum of the heights
+    private float FitnessFunction(List<Block> blockList){
+        float score = 0;
+        // DNA<List<Block>> dna = ga.Population[index];
+
+        foreach(Block block in blockList){
+            score += block.obj.transform.position.y;
+        }
+
+        return score;
+    }
 }
 
 public class Block
@@ -122,3 +152,4 @@ public class Block
     }
 
 }
+
