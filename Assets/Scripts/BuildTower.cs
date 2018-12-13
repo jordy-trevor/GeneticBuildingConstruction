@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuildTower : MonoBehaviour {
-
+public class BuildTower : MonoBehaviour {   
+    [Header("Genetic Algorithm")]
     // the height our tower hopes to achieve
     [SerializeField] int targetHeight = 10;
+    //population size
+    // [SerializeField] int populationSize = 200;
+    // [SerializeField] float mutationRate = 0.01f;
+    // [SerializeField] int elitism = 5;
 
+    [Header("Other")]
     [SerializeField] GameObject buildingBlock1;
     [SerializeField] int buildingBlock1Count = 0;
     [SerializeField] GameObject buildingBlock2;
@@ -14,11 +19,14 @@ public class BuildTower : MonoBehaviour {
     [SerializeField] GameObject buildingBlock3;
     [SerializeField] int buildingBlock3Count = 0;
 
+    //private GeneticAlgorithm<char> ga;
+    //private System.Random random;
     //create a data structure to store how the pieces were placed
 
     
 	// Use this for initialization
 	void Start () {
+        //random = new System.Random();
         // places each block randomly
         int bb1c = buildingBlock1Count;
         int bb2c = buildingBlock2Count;
