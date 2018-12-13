@@ -90,27 +90,25 @@ public class BuildTower : MonoBehaviour {
 		Debug.Log(FitnessFunction(blockList).ToString());
 	}
 
-//function: FitnessFunction(int index)
-//input: int index - the index of blockList in ga Population
-//output: float score - a fitness score of the current blockList which the sum of the heights
+    //function: FitnessFunction(int index)
+    //input: int index - the index of blockList in ga Population
+    //output: float score - a fitness score of the current blockList which the sum of the heights
     private float FitnessFunction(int index){
         float score = 0;
         DNA<List<Block>> dna = ga.Population[index];
 
-        foreach(Block block in dna.Genes[index]){
-            score += block.obj.transform.position.y;
-        }
+        // foreach(Block block in dna.Genes[index]){
+        //     score += block.obj.transform.position.y;
+        // }
         return score;
     }
 
 
     //function: FitnessFunction(List<Block> blockList)
-//input: List<Block> blockList - a list of blocks
-//output: float score - a fitness score of the current blockList which the sum of the heights
+    //input: List<Block> blockList - a list of blocks
+    //output: float score - a fitness score of the current blockList which the sum of the heights
     private float FitnessFunction(List<Block> blockList){
         float score = 0;
-        // DNA<List<Block>> dna = ga.Population[index];
-
         foreach(Block block in blockList){
             score += block.obj.transform.position.y;
         }
