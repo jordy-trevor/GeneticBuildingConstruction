@@ -7,9 +7,9 @@ public class BuildTower : MonoBehaviour {
     // the height our tower hopes to achieve
     [SerializeField] int targetHeight = 10;
     //population size
-    // [SerializeField] int populationSize = 200;
-    // [SerializeField] float mutationRate = 0.01f;
-    // [SerializeField] int elitism = 5;
+    [SerializeField] int populationSize = 200;
+    [SerializeField] float mutationRate = 0.01f;
+    [SerializeField] int elitism = 5;
 
     [Header("Other")]
     [SerializeField] GameObject buildingBlock1;
@@ -22,8 +22,8 @@ public class BuildTower : MonoBehaviour {
     //create a data structure to store how the pieces were placed
     List<Block> blockList = new List<Block>();
 
-     private GeneticAlgorithm<List<Block>> ga = null;
-    //  private System.Random random;
+     private GeneticAlgorithm<Block> ga;
+     private System.Random random;
 
     
 	// Use this for initialization
@@ -115,6 +115,9 @@ public class BuildTower : MonoBehaviour {
                 blockList.Add(new Block("buildingBlock3", obj, xpos, ypos, zpos, xrot, yrot, zrot));
             }
         }
+        random = new System.Random();
+        ga = new GeneticAlgorithm<Block>(populationSize, targetHeight, random, getRandomPos, FitnessFunction, elitism, mutationRate);
+
         // print spawn locations/rotations of each block
         foreach( Block b in blockList) {
             Debug.Log(b.toString());
@@ -123,7 +126,7 @@ public class BuildTower : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//Debug.Log(FitnessFunction(blockList).ToString());
+		// Debug.Log(FitnessFunction(blockList).ToString());
 
         //IMPORTANT: this is just for testing purposes. Remove once not needed
         if(Input.GetKeyDown("space"))
@@ -150,31 +153,38 @@ public class BuildTower : MonoBehaviour {
         }
     }
 
+    private Block getRandomPos(){
+        Block randomBlock = null;
+        // List<Block> randomBlockList = null;
+        // return randomBlockList;
+        return randomBlock;
+    }
+
     //function: FitnessFunction(int index)
     //input: int index - the index of blockList in ga Population
     //output: float score - a fitness score of the current blockList which the sum of the heights
     private float FitnessFunction(int index){
         float score = 0;
-        DNA<List<Block>> dna = ga.Population[index];
+        DNA<Block> dna = ga.Population[index];
 
-        // foreach(Block block in dna.Genes[index]){
-        //     score += block.obj.transform.position.y;
-        // }
-        return score;
-    }
-
-
-    //function: FitnessFunction(List<Block> blockList)
-    //input: List<Block> blockList - a list of blocks
-    //output: float score - a fitness score of the current blockList which the sum of the heights
-    private float FitnessFunction(List<Block> blockList){
-        float score = 0;
-        foreach(Block block in blockList){
+        foreach(Block block in dna.Genes){
             score += block.obj.transform.position.y;
         }
-
         return score;
     }
+
+
+    // //function: FitnessFunction(List<Block> blockList)
+    // //input: List<Block> blockList - a list of blocks
+    // //output: float score - a fitness score of the current blockList which the sum of the heights
+    // private float FitnessFunction(List<Block> blockList){
+    //     float score = 0;
+    //     foreach(Block block in blockList){
+    //         score += block.obj.transform.position.y;
+    //     }
+
+    //     return score;
+    // }
 }
 
 public class Block
