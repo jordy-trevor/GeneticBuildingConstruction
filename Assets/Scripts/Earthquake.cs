@@ -7,11 +7,15 @@ public class Earthquake : MonoBehaviour {
     //recommended: keep shakeDistance at 1 and increase speed for increaseingly intense earthquakes
     [Range(0.0f, 10.0f)][SerializeField] private float shakeDistance = 1.0f;
     [Range(0.0f, 10.0f)] [SerializeField] private float speed = 3.0f;
+    [SerializeField] private float timeMultiplier = 1.0f;
     private Rigidbody rb;
     string moveDirection = "right";
 
     // Use this for initialization
     void Start () {
+        // time scale increase
+        Time.timeScale = timeMultiplier;
+
         rb = GetComponent<Rigidbody>();
 	}
 	
