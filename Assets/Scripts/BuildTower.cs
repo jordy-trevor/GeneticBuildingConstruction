@@ -99,7 +99,6 @@ public class BuildTower : MonoBehaviour {
         return false;
     }
 
-
     //function: FitnessFunction(int index)
     //input: int index - the index of blockList in ga Population
     //output: float score - a fitness score of the current blockList which the sum of the heights
