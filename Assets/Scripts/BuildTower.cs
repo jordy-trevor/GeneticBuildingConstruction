@@ -46,9 +46,9 @@ public class BuildTower : MonoBehaviour {
                 int xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
                 int yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
                 int zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-                Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
+                GameObject obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
                 bb1c--;
-                blockList.Add(new Block("buildingBlock1", xpos, ypos, zpos, xrot, yrot, zrot));
+                blockList.Add(new Block("buildingBlock1", obj, xpos, ypos, zpos, xrot, yrot, zrot));
             }
             if (bb2c > 0)
             {
@@ -59,9 +59,9 @@ public class BuildTower : MonoBehaviour {
                 int xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
                 int yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
                 int zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-                Instantiate(buildingBlock2, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
+                GameObject obj = Instantiate(buildingBlock2, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
                 bb2c--;
-                blockList.Add(new Block("buildingBlock2", xpos, ypos, zpos, xrot, yrot, zrot));
+                blockList.Add(new Block("buildingBlock2", obj, xpos, ypos, zpos, xrot, yrot, zrot));
             }
             if (bb3c > 0)
             {
@@ -72,9 +72,9 @@ public class BuildTower : MonoBehaviour {
                 int xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
                 int yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
                 int zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-                Instantiate(buildingBlock3, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
+                GameObject obj = Instantiate(buildingBlock3, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
                 bb3c--;
-                blockList.Add(new Block("buildingBlock3", xpos, ypos, zpos, xrot, yrot, zrot));
+                blockList.Add(new Block("buildingBlock3", obj, xpos, ypos, zpos, xrot, yrot, zrot));
             }
         }
         // print spawn locations/rotations of each block
@@ -93,6 +93,8 @@ public class Block
 {
     // name of prefab
     public string blockType;
+    // reference to game object
+    public GameObject obj;
     // the positions of the block
     public int xpos;
     public int ypos;
@@ -102,9 +104,10 @@ public class Block
     public int yrot;
     public int zrot;
 
-    public Block(string blockType, int xpos, int ypos, int zpos, int xrot, int yrot, int zrot)
+    public Block(string blockType, GameObject obj, int xpos, int ypos, int zpos, int xrot, int yrot, int zrot)
     {
         this.blockType = blockType;
+        this.obj = obj;
         this.xpos = xpos;
         this.ypos = ypos;
         this.zpos = zpos;
