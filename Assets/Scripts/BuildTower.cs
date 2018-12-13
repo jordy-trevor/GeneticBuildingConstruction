@@ -123,8 +123,32 @@ public class BuildTower : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(FitnessFunction(blockList).ToString());
+		//Debug.Log(FitnessFunction(blockList).ToString());
+
+        //IMPORTANT: this is just for testing purposes. Remove once not needed
+        if(Input.GetKeyDown("space"))
+        {
+            CreateTower(blockList);
+        }
 	}
+
+    // spawns the blocks in the blockList into the scene
+    public void CreateTower(List<Block> blockList)
+    {
+        foreach (Block b in blockList)
+        {
+            if(b.blockType == "buildingBlock1")
+            {
+                Instantiate(buildingBlock1, new Vector3(b.xpos, b.ypos, b.zpos), Quaternion.Euler(b.xrot, b.yrot, b.zrot));
+            } else if (b.blockType == "buildingBlock2")
+            {
+                Instantiate(buildingBlock2, new Vector3(b.xpos, b.ypos, b.zpos), Quaternion.Euler(b.xrot, b.yrot, b.zrot));
+            } else if (b.blockType == "buildingBlock3")
+            {
+                Instantiate(buildingBlock3, new Vector3(b.xpos, b.ypos, b.zpos), Quaternion.Euler(b.xrot, b.yrot, b.zrot));
+            }
+        }
+    }
 
     //function: FitnessFunction(int index)
     //input: int index - the index of blockList in ga Population

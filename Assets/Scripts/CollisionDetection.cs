@@ -16,6 +16,7 @@ public class CollisionDetection : MonoBehaviour {
 		
 	}
 
+    // report back if touching anything else
     public void OnCollisionEnter(Collision other)
     {
         isColliding = true;
