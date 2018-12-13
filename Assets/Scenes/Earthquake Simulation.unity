@@ -248,7 +248,12 @@ Prefab:
     - target: {fileID: 114591416237583168, guid: a9675eef06d72af4ea15011ddcc7e420,
         type: 2}
       propertyPath: timeMultiplier
-      value: 10
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114591416237583168, guid: a9675eef06d72af4ea15011ddcc7e420,
+        type: 2}
+      propertyPath: speed
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9675eef06d72af4ea15011ddcc7e420, type: 2}
