@@ -7,9 +7,9 @@ public class BuildTower : MonoBehaviour {
     // the height our tower hopes to achieve
     [SerializeField] int targetHeight = 10;
     //population size
-    // [SerializeField] int populationSize = 200;
-    // [SerializeField] float mutationRate = 0.01f;
-    // [SerializeField] int elitism = 5;
+    [SerializeField] int populationSize = 200;
+    [SerializeField] float mutationRate = 0.01f;
+    [SerializeField] int elitism = 5;
 
     [Header("Other")]
     [SerializeField] GameObject buildingBlock1;
@@ -18,7 +18,7 @@ public class BuildTower : MonoBehaviour {
     [SerializeField] int buildingBlock2Count = 0;
     [SerializeField] GameObject buildingBlock3;
     [SerializeField] int buildingBlock3Count = 0;
-
+    private System.Random random;
     //create a data structure to store how the pieces were placed
     List<Block> blockList = new List<Block>();
 
@@ -34,9 +34,10 @@ public class BuildTower : MonoBehaviour {
         int bb1c = buildingBlock1Count;
         int bb2c = buildingBlock2Count;
         int bb3c = buildingBlock3Count;
-
+        random = new System.Random();
+        ga = new GeneticAlgorithm<List<Block>>(populationSize, targetHeight, random, getRandomPos, FitnessFunction, elitism, mutationRate);
         // run as long as we still have materials to use
-        while( bb1c > 0 || bb2c > 0 || bb3c > 0)
+        while ( bb1c > 0 || bb2c > 0 || bb3c > 0)
         {
             if(bb1c > 0)
             {
@@ -132,6 +133,17 @@ public class BuildTower : MonoBehaviour {
         }
 	}
 
+    private List<int> getRandomPos()
+    {
+        List<int> newList = new List<int>();
+        int xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
+        int ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
+        int zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
+        newList.Add(xpos);
+        newList.Add(ypos);
+        newList.Add(zpos);  
+        return newList;
+    }
     // spawns the blocks in the blockList into the scene
     public void CreateTower(List<Block> blockList)
     {

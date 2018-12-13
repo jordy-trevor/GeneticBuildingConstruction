@@ -12,7 +12,7 @@ public class DNA<T>
 
 	public DNA(int size, Random random, Func<List<int>> getRandomGene, Func<int, float> fitnessFunction, bool shouldInitGenes = true)
 	{
-		Genes = new List<int>[size];
+		Genes = new List<int> [size];
 		this.random = random;
 		this.getRandomGene = getRandomGene;
 		this.fitnessFunction = fitnessFunction;
