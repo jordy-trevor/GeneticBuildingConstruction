@@ -42,7 +42,7 @@ public class BuildTower : MonoBehaviour {
             {
                 bool tryAgain = true;
                 int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
-                GameObject obj = null;
+                GameObject obj = null; 
                 while( tryAgain )
                 {
                     // place at random postions, with random rotations
