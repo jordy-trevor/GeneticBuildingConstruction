@@ -1,17 +1,18 @@
 using System;
+using System.Collections.Generic;
 
 public class DNA<T>
 {
-	public T[] Genes { get; private set; }
+	public List<int>[] Genes { get; private set; }
 	public float Fitness { get; private set; }
 
 	private Random random;
-	private Func<T> getRandomGene;
+	private Func<List<int>> getRandomGene;
 	private Func<int, float> fitnessFunction;
 
-	public DNA(int size, Random random, Func<T> getRandomGene, Func<int, float> fitnessFunction, bool shouldInitGenes = true)
+	public DNA(int size, Random random, Func<List<int>> getRandomGene, Func<int, float> fitnessFunction, bool shouldInitGenes = true)
 	{
-		Genes = new T[size];
+		Genes = new List<int>[size];
 		this.random = random;
 		this.getRandomGene = getRandomGene;
 		this.fitnessFunction = fitnessFunction;
@@ -37,7 +38,11 @@ public class DNA<T>
 
 		for (int i = 0; i < Genes.Length; i++)
 		{
-			child.Genes[i] = random.NextDouble() < 0.5 ? Genes[i] : otherParent.Genes[i];
+			for( int j = 0 ; j < 3; j++)
+			{
+				child.Genes[i][j] = random.NextDouble() < 0.5 ? Genes[i][j] : otherParent.Genes[i][j];
+			}
+			
 		}
 
 		return child;
