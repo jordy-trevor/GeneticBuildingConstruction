@@ -24,6 +24,7 @@ public class BuildTower : MonoBehaviour {
 
      private GeneticAlgorithm<Block> ga;
      private System.Random random;
+     private int timeThreshold = 10;
 
     
 	// Use this for initialization
@@ -126,8 +127,14 @@ public class BuildTower : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		// Debug.Log(FitnessFunction(blockList).ToString());
+		Debug.Log(FitnessFunction(blockList).ToString());
+        if(Time.time > timeThreshold){
+            Debug.Log(Time.time);
+            ga.NewGeneration();
+            // if(ga.BestFitness == )
 
+            timeThreshold += 10;
+        }
         //IMPORTANT: this is just for testing purposes. Remove once not needed
         if(Input.GetKeyDown("space"))
         {
@@ -174,17 +181,17 @@ public class BuildTower : MonoBehaviour {
     }
 
 
-    // //function: FitnessFunction(List<Block> blockList)
-    // //input: List<Block> blockList - a list of blocks
-    // //output: float score - a fitness score of the current blockList which the sum of the heights
-    // private float FitnessFunction(List<Block> blockList){
-    //     float score = 0;
-    //     foreach(Block block in blockList){
-    //         score += block.obj.transform.position.y;
-    //     }
+    //function: FitnessFunction(List<Block> blockList)
+    //input: List<Block> blockList - a list of blocks
+    //output: float score - a fitness score of the current blockList which the sum of the heights
+    private float FitnessFunction(List<Block> blockList){
+        float score = 0;
+        foreach(Block block in blockList){
+            score += block.obj.transform.position.y;
+        }
 
-    //     return score;
-    // }
+        return score;
+    }
 }
 
 public class Block
