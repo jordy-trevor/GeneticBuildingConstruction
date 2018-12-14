@@ -14,14 +14,16 @@ public class BuildTower : MonoBehaviour
 
     [Header("Other")]
     [SerializeField] GameObject buildingBlock1;
-    // [SerializeField] int buildingBlock1Count = 0;
+    [SerializeField] int buildingBlock1Count = 0;
     [SerializeField] GameObject buildingBlock2;
-    // [SerializeField] int buildingBlock2Count = 0;
+    [SerializeField] int buildingBlock2Count = 0;
     [SerializeField] GameObject buildingBlock3;
-    // [SerializeField] int buildingBlock3Count = 0;
+    [SerializeField] int buildingBlock3Count = 0;
 
     // //create a data structure to store how the pieces were placed
-    // List<Block> blockList = new List<Block>();
+    List<Block> blockList = new List<Block>();
+    public int bb1c, bb2c, bb3c; // changable counts
+    public bool finishedSpawning = false;
 
     private GeneticAlgorithm<Block> ga;
     private System.Random random;
@@ -31,93 +33,10 @@ public class BuildTower : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
-        //random = new System.Random();
         // places each block randomly
-        // int bb1c = buildingBlock1Count;
-        // int bb2c = buildingBlock2Count;
-        // int bb3c = buildingBlock3Count;
-
-        // // run as long as we still have materials to use
-        // while( bb1c > 0 || bb2c > 0 || bb3c > 0)
-        // {
-        //     if(bb1c > 0)
-        //     {
-        //         bool tryAgain = true;
-        //         int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
-        //         GameObject obj = null; 
-        //         while( tryAgain )
-        //         {
-        //             // place at random postions, with random rotations
-        //             // make sure its ontop of earthquake platform
-        //             xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
-        //             ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
-        //             zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
-        //             // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
-        //             xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
-        //             // check if new positioning is overlapping with any other block. If so, try to place it again. 
-        //             if (!obj.GetComponent<CollisionDetection>().isColliding)
-        //             {
-        //                 tryAgain = false;
-        //             }
-        //         }
-        //         bb1c--;
-        //         blockList.Add(new Block("buildingBlock1", obj, xpos, ypos, zpos, xrot, yrot, zrot));
-        //     }
-        //     if (bb2c > 0)
-        //     {
-        //         bool tryAgain = true;
-        //         int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
-        //         GameObject obj = null;
-        //         while (tryAgain)
-        //         {
-        //             // place at random postions, with random rotations
-        //             // make sure its ontop of earthquake platform
-        //             xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
-        //             ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
-        //             zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
-        //             // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
-        //             xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
-        //             if (!obj.GetComponent<CollisionDetection>().isColliding)
-        //             {
-        //                 tryAgain = false;
-        //             }
-        //         }
-        //         bb2c--;
-        //         blockList.Add(new Block("buildingBlock2", obj, xpos, ypos, zpos, xrot, yrot, zrot));
-        //     }
-        //     if (bb3c > 0)
-        //     {
-        //         bool tryAgain = true;
-        //         int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
-        //         GameObject obj = null;
-        //         while (tryAgain)
-        //         {
-        //             // place at random postions, with random rotations
-        //             // make sure its ontop of earthquake platform
-        //             xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
-        //             ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
-        //             zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
-        //             // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
-        //             xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
-        //             obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
-        //             if (!obj.GetComponent<CollisionDetection>().isColliding)
-        //             {
-        //                 tryAgain = false;
-        //             }
-        //         }
-        //         bb3c--;
-        //         blockList.Add(new Block("buildingBlock3", obj, xpos, ypos, zpos, xrot, yrot, zrot));
-        //     }
-        // }
+        bb1c = buildingBlock1Count;
+        bb2c = buildingBlock2Count;
+        bb3c = buildingBlock3Count;
         random = new System.Random();
         populationSize = 10;
         ga = new GeneticAlgorithm<Block>(populationSize, targetHeight, random, getRandomBlock, FitnessFunction, elitism, mutationRate);
@@ -142,7 +61,105 @@ public class BuildTower : MonoBehaviour
             }
             timeThreshold += 10;
         }
+        // random spawn here
+        if (bb1c > 0)
+        {
+            int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
+            GameObject obj = null;
+            // place at random postions, with random rotations
+            // make sure its ontop of earthquake platform
+            xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
+            ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
+            zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
+            // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
+            xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
+            bb1c--;
+            blockList.Add(new Block("buildingBlock1", obj, xpos, ypos, zpos, xrot, yrot, zrot));
 
+        }
+        else if (bb2c > 0)
+        {
+            int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
+            GameObject obj = null;
+
+            // place at random postions, with random rotations
+            // make sure its ontop of earthquake platform
+            xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
+            ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
+            zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
+            // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
+            xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
+            bb2c--;
+            blockList.Add(new Block("buildingBlock2", obj, xpos, ypos, zpos, xrot, yrot, zrot));
+        }
+        else if (bb3c > 0)
+        {
+            int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
+            GameObject obj = null;
+
+            // place at random postions, with random rotations
+            // make sure its ontop of earthquake platform
+            xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
+            ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
+            zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
+            // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
+            xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
+
+            bb3c--;
+            blockList.Add(new Block("buildingBlock3", obj, xpos, ypos, zpos, xrot, yrot, zrot));
+        }
+        else if (!finishedSpawning)
+        {
+
+            int count = 0;
+            List<Block> tmpbl = new List<Block>(blockList);
+            foreach (Block b in tmpbl)
+            {
+
+                if (b.obj.GetComponent<CollisionDetection>().isColliding)
+                {
+
+                    blockList.Remove(b);
+                    Destroy(b.obj);
+                    if (b.blockType == "buildingBlock1")
+                    {
+                        bb1c++;
+                    }
+                    else if (b.blockType == "buildingBlock2")
+                    {
+                        bb2c++;
+                    }
+                    else if (b.blockType == "buildingBlock3")
+                    {
+                        bb3c++;
+                    }
+                    count++;
+                }
+            }
+            if (count == 0)
+            {
+                // if none of them are colliding
+                // unfreeze all 
+                Debug.Log("unfreeze time");
+                finishedSpawning = true;
+                foreach (Block b in blockList)
+                {
+                    Debug.Log(b.toString());
+                    b.obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+                    b.obj.GetComponent<Rigidbody>().isKinematic = false;
+                    b.obj.GetComponent<Rigidbody>().useGravity = true;
+                }
+            }
+        }
         // //IMPORTANT: this is just for testing purposes. Remove once not needed
         // if(Input.GetKeyDown("space"))
         // {
