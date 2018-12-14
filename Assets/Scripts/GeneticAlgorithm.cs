@@ -7,7 +7,7 @@ public class GeneticAlgorithm<Block>
     public List<DNA<Block>> Population { get; private set; }
     public int Generation { get; private set; }
     public float BestFitness { get; private set; }
-    public List<Block> BestGenes { get; private set; }
+    public Block [] BestGenes { get; private set; }
 
     public int Elitism;
     public float MutationRate;
@@ -32,7 +32,7 @@ public class GeneticAlgorithm<Block>
         this.getRandomGene = getRandomGene;
         this.fitnessFunction = fitnessFunction;
 
-        BestGenes = new List<Block>();
+        BestGenes = new Block[dnaSize];
         for (int i = 0; i < populationSize; i++)
         {
             // Debug.Log(i);
