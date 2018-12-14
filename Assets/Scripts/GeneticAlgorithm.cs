@@ -57,10 +57,13 @@ public class GeneticAlgorithm<BlockValue>
 				DNA<BlockValue> child;
 
 				if(parent1 == null && parent2 == null){
+					Debug.Log("NULL");
 					child = new DNA<BlockValue>(dnaSize, random, getRandomGene, shouldInitGenes: true);
 				}else if(parent1 == null){
+					Debug.Log("NULL");
 					child = parent2;
 				}else if(parent2 == null){
+					Debug.Log("NULL");
 					child = parent1;
 				}else{
 					child = parent1.Crossover(parent2);
@@ -95,11 +98,13 @@ public class GeneticAlgorithm<BlockValue>
 	}
 
 	private DNA<BlockValue> ChooseParent()
-	{
+	{	
 		double randomNumber = random.NextDouble() * fitnessSum;
 
 		for (int i = 0; i < Population.Count; i++)
 		{
+			// Debug.Log("Random Number = " + randomNumber);
+			// Debug.Log("Population[i].Fitness = " + Population[i].Fitness);
 			if (randomNumber < Population[i].Fitness)
 			{
 				return Population[i];

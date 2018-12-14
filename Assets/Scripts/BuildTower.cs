@@ -6,7 +6,7 @@ public class BuildTower : MonoBehaviour {
     [Header("Genetic Algorithm")]
     // the height our tower hopes to achieve
     [SerializeField] int dnaSize = 5;
-    [SerializeField] int targetHeight = 100;
+    [SerializeField] int targetHeight = 20;
     //population size
     [SerializeField] int populationSize = 50;
     [SerializeField] float mutationRate = 0.01f;
@@ -29,9 +29,10 @@ public class BuildTower : MonoBehaviour {
     List<Block> blockList = new List<Block>();
      public bool isNewSimulation = true;
      public int populationIndex = 0;
-    public float simulationTime = 5.0f;
+    public float simulationTime;
     public bool isSimulationFinished = false;
     public bool isSimulationinProgress = false;
+    private float runTime = 10f;
     DNA<BlockValue> best = null;
     
 	// Use this for initialization
@@ -145,16 +146,18 @@ public class BuildTower : MonoBehaviour {
             isSimulationFinished = false;
             isSimulationinProgress = true;
             createBlocks(populationIndex); //Create the blocks for the scene
-            simulationTime = 5.0f;
+            simulationTime = runTime;
         }
 
         //At the end of the current index and the start of the new index
         if(simulationTime < 0 && isSimulationinProgress){
             Debug.Log(populationIndex);
             float currentFitnessSum = FitnessFunction(blockList);
+            Debug.Log(currentFitnessSum);
             destroyBlocks();
             blockList = new List<Block>();
             ga.fitnessSum += currentFitnessSum;
+            ga.Population[populationIndex].Fitness = currentFitnessSum;
             if(currentFitnessSum > best.Fitness){
                 best = ga.Population[populationIndex];
             }
@@ -164,7 +167,7 @@ public class BuildTower : MonoBehaviour {
                 isSimulationFinished = true;
             }else{
                 createBlocks(populationIndex);
-                simulationTime = 5.0f;
+                simulationTime = runTime;
             }
         }
 
@@ -174,6 +177,11 @@ public class BuildTower : MonoBehaviour {
             ga.NewGeneration();
             isNewSimulation = true;
         }
+
+        // if(ga.BestFitness > .5){
+        //     Debug.Log("COMPLETED");
+        //     this.enabled = false;
+        // }
 
         //Timer for 10 seconds
         simulationTime -= Time.deltaTime;
@@ -200,7 +208,7 @@ public class BuildTower : MonoBehaviour {
     private BlockValue getRandomBlockValue(){
         BlockValue returnValue = null;
 
-        int xpos, ypos, zpos, xrot, yrot, zrot;
+        float xpos, ypos, zpos, xrot, yrot, zrot;
         // place at random postions, with random rotations
         // make sure its ontop of earthquake platform
         xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
@@ -211,11 +219,8 @@ public class BuildTower : MonoBehaviour {
         yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
         zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
 
-        if(targetHeight == 0){
-            // Debug.Log("HELLO WORLD");
-        }
+        returnValue = new BlockValue("buildingBlock1", xpos, ypos, zpos, xrot, yrot, zrot);
 
-        returnValue = new BlockValue(buildingBlock1, xpos, ypos, zpos, xrot, yrot, zrot);
         return returnValue;
     }
 
@@ -254,8 +259,14 @@ public class BuildTower : MonoBehaviour {
     public void createBlocks(int index){
         DNA<BlockValue> dna = ga.Population[index];
         foreach(BlockValue blockValue in dna.Genes){
+            // if(blockValue.blockType == "buildingBlock1"){
+            // Debug.Log(blockValue.ypos);
             GameObject obj = Instantiate(buildingBlock1, new Vector3(blockValue.xpos, blockValue.ypos, blockValue.zpos), Quaternion.Euler(blockValue.xrot, blockValue.yrot, blockValue.zrot));
             blockList.Add(new Block("buildingBlock1", obj, blockValue.xpos, blockValue.ypos, blockValue.zpos, blockValue.xrot, blockValue.yrot, blockValue.zrot));
+            // }else{
+                // GameObject obj = Instantiate(buildingBlock2, new Vector3(blockValue.xpos, blockValue.ypos, blockValue.zpos), Quaternion.Euler(blockValue.xrot, blockValue.yrot, blockValue.zrot));
+                // blockList.Add(new Block("buildingBlock2", obj, blockValue.xpos, blockValue.ypos, blockValue.zpos, blockValue.xrot, blockValue.yrot, blockValue.zrot));
+            // }
         }
     }
 
@@ -268,17 +279,60 @@ public class BuildTower : MonoBehaviour {
 
     private float FitnessFunction(List<Block> blockList){
         float score = 0;
+        float totalHeight = 0;
+        float maxHeight = 0;
         foreach(Block block in blockList){
-            score += block.obj.transform.position.y;
+            if(block.obj.transform.position.y > maxHeight){
+                maxHeight = block.obj.transform.position.y;
+            }
+            totalHeight += block.obj.transform.position.y; 
+            if(block.obj.transform.position.y > 3.5){
+                foreach(Block otherBlock in blockList){
+                    if(block != otherBlock){
+                        float x1 = block.obj.transform.position.x;
+                        float y1 = block.obj.transform.position.y;
+                        float x2 = otherBlock.obj.transform.position.x;
+                        float y2 = otherBlock.obj.transform.position.y;
+                        if(distanceFormula(x1,x2,y1,y2) < 3){
+                            score += block.obj.transform.position.y*2;
+                        }
+                    }
+                }
+            }else if(block.obj.transform.position.y > 0){
+                float longestDistance = 0;
+                foreach(Block otherBlock in blockList){
+                    if(block != otherBlock && otherBlock.obj.transform.position.y > 0){
+                        float x1 = block.obj.transform.position.x;
+                        float z1 = block.obj.transform.position.z;
+                        float x2 = otherBlock.obj.transform.position.x;
+                        float z2 = otherBlock.obj.transform.position.z;
+                        if(distanceFormula(x1, x2, z1, z2) > longestDistance){
+                            longestDistance = distanceFormula(x2, x2, z1, z2);
+                        }
+                    }
+                }
+                if(longestDistance<4){
+                    score += 2;
+                 }
+            }
+         }
+
+        score += maxHeight*3;
+
+        float averageHeight = totalHeight/dnaSize;
+        if(averageHeight > 3.5){
+            score += 2;
         }
 
-        if(score > (3.5*dnaSize)){
-            score = score*2;
-        }
-
+        score /= targetHeight;
+        // score = (Mathf.Pow(dnaSize, score) - 1) / (dnaSize - 1);
+        Debug.Log("Score:" + score);
         return score;
     }
 
+    private float distanceFormula(float x1, float x2, float y1, float y2){
+        return Mathf.Sqrt(Mathf.Pow(x2-x1,2) + Mathf.Pow(y2-y1,2));
+    }
 }
 
 public class Block
@@ -288,15 +342,15 @@ public class Block
     // reference to game object
     public GameObject obj;
     // the positions of the block
-    public int xpos;
-    public int ypos;
-    public int zpos;
+    public float xpos;
+    public float ypos;
+    public float zpos;
     // rotations of block
-    public int xrot;
-    public int yrot;
-    public int zrot;
+    public float xrot;
+    public float yrot;
+    public float zrot;
 
-    public Block(string blockType, GameObject obj, int xpos, int ypos, int zpos, int xrot, int yrot, int zrot)
+    public Block(string blockType, GameObject obj, float xpos, float ypos, float zpos, float xrot, float yrot, float zrot)
     {
         this.blockType = blockType;
         this.obj = obj;
@@ -316,18 +370,19 @@ public class Block
 }
 
 public class BlockValue{
-    public object blockType;
-    public int xpos;
-    public int ypos;
-    public int zpos;
-    public int xrot;
-    public int yrot;
-    public int zrot;
+    public string blockType;
+    public float xpos;
+    public float ypos;
+    public float zpos;
+    public float xrot;
+    public float yrot;
+    public float zrot;
 
-    public BlockValue(object blockType, int xpos, int ypos, int zpos, int xrot, int yrot, int zrot)
-    {
+    public BlockValue(string blockType, float xpos, float ypos, float zpos, float xrot, float yrot, float zrot)
+    {   
         this.blockType = blockType;
         this.xpos = xpos;
+        this.ypos = ypos;
         this.zpos = zpos;
         this.xrot = xrot;
         this.yrot = yrot;

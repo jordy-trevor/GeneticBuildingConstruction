@@ -6,7 +6,7 @@ using UnityEngine;
 public class DNA<BlockValue>
 {
 	public List<BlockValue> Genes { get; private set; }
-	public float Fitness { get; private set; }
+	public float Fitness;
 	public int geneSize;
 
 	private System.Random random;
