@@ -7,9 +7,9 @@ public class BuildTower : MonoBehaviour {
     // the height our tower hopes to achieve
     [SerializeField] int targetHeight = 10;
     //population size
-    [SerializeField] int populationSize = 200;
-    [SerializeField] float mutationRate = 0.01f;
-    [SerializeField] int elitism = 5;
+    //[SerializeField] int populationSize = 200;
+    //[SerializeField] float mutationRate = 0.01f;
+    //[SerializeField] int elitism = 5;
 
     [Header("Other")]
     [SerializeField] GameObject buildingBlock1;
