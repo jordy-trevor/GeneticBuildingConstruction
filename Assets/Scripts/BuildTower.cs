@@ -33,6 +33,8 @@ public class BuildTower : MonoBehaviour {
     public bool isSimulationFinished = false;
     public bool isSimulationinProgress = false;
     private float runTime = 10f;
+
+    private int generation = 1;
     DNA<BlockValue> best = null;
     
 	// Use this for initialization
@@ -139,6 +141,7 @@ public class BuildTower : MonoBehaviour {
 
         //The start of a CaculateFitness
         if(isNewSimulation){
+            Debug.Log(generation);
             best = ga.Population[0];
             ga.fitnessSum = 0;
             populationIndex = 0;
@@ -151,9 +154,9 @@ public class BuildTower : MonoBehaviour {
 
         //At the end of the current index and the start of the new index
         if(simulationTime < 0 && isSimulationinProgress){
-            Debug.Log(populationIndex);
+            // Debug.Log(populationIndex);
             float currentFitnessSum = FitnessFunction(blockList);
-            Debug.Log(currentFitnessSum);
+            // Debug.Log(currentFitnessSum);
             destroyBlocks();
             blockList = new List<Block>();
             ga.fitnessSum += currentFitnessSum;
@@ -176,6 +179,7 @@ public class BuildTower : MonoBehaviour {
             ga.BestGenes = best.Genes;
             ga.NewGeneration();
             isNewSimulation = true;
+            generation++;
         }
 
         // if(ga.BestFitness > .5){
@@ -212,14 +216,21 @@ public class BuildTower : MonoBehaviour {
         // place at random postions, with random rotations
         // make sure its ontop of earthquake platform
         xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
-        ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 25));
+        ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight));
         zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
         // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
         xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
         yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
         zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
 
-        returnValue = new BlockValue("buildingBlock1", xpos, ypos, zpos, xrot, yrot, zrot);
+        // double chance = random.NextDouble();
+        // if(chance > .66){
+            returnValue = new BlockValue("buildingBlock1", xpos, ypos, zpos, xrot, yrot, zrot);
+        // }else if(chance > .33){
+        //     returnValue = new BlockValue("buildingBlock2", xpos, ypos, zpos, xrot, yrot, zrot);
+        // }else{
+        //     returnValue = new BlockValue("buildingBlock3", xpos, ypos, zpos, xrot, 90, zrot);
+        // }
 
         return returnValue;
     }
@@ -259,14 +270,16 @@ public class BuildTower : MonoBehaviour {
     public void createBlocks(int index){
         DNA<BlockValue> dna = ga.Population[index];
         foreach(BlockValue blockValue in dna.Genes){
-            // if(blockValue.blockType == "buildingBlock1"){
-            // Debug.Log(blockValue.ypos);
-            GameObject obj = Instantiate(buildingBlock1, new Vector3(blockValue.xpos, blockValue.ypos, blockValue.zpos), Quaternion.Euler(blockValue.xrot, blockValue.yrot, blockValue.zrot));
-            blockList.Add(new Block("buildingBlock1", obj, blockValue.xpos, blockValue.ypos, blockValue.zpos, blockValue.xrot, blockValue.yrot, blockValue.zrot));
-            // }else{
-                // GameObject obj = Instantiate(buildingBlock2, new Vector3(blockValue.xpos, blockValue.ypos, blockValue.zpos), Quaternion.Euler(blockValue.xrot, blockValue.yrot, blockValue.zrot));
-                // blockList.Add(new Block("buildingBlock2", obj, blockValue.xpos, blockValue.ypos, blockValue.zpos, blockValue.xrot, blockValue.yrot, blockValue.zrot));
-            // }
+            if(blockValue.blockType == "buildingBlock1"){
+                GameObject obj = Instantiate(buildingBlock1, new Vector3(blockValue.xpos, blockValue.ypos, blockValue.zpos), Quaternion.Euler(blockValue.xrot, blockValue.yrot, blockValue.zrot));
+                blockList.Add(new Block("buildingBlock1", obj, blockValue.xpos, blockValue.ypos, blockValue.zpos, blockValue.xrot, blockValue.yrot, blockValue.zrot));
+            }else if(blockValue.blockType == "buildingBlock2"){
+                GameObject obj = Instantiate(buildingBlock2, new Vector3(blockValue.xpos, blockValue.ypos, blockValue.zpos), Quaternion.Euler(blockValue.xrot, blockValue.yrot, blockValue.zrot));
+                blockList.Add(new Block("buildingBlock2", obj, blockValue.xpos, blockValue.ypos, blockValue.zpos, blockValue.xrot, blockValue.yrot, blockValue.zrot));
+            }else{
+                GameObject obj = Instantiate(buildingBlock3, new Vector3(blockValue.xpos, blockValue.ypos, blockValue.zpos), Quaternion.Euler(blockValue.xrot, blockValue.yrot, blockValue.zrot));
+                blockList.Add(new Block("buildingBlock3", obj, blockValue.xpos, blockValue.ypos, blockValue.zpos, blockValue.xrot, blockValue.yrot, blockValue.zrot)); 
+            }
         }
     }
 
@@ -279,53 +292,44 @@ public class BuildTower : MonoBehaviour {
 
     private float FitnessFunction(List<Block> blockList){
         float score = 0;
-        float totalHeight = 0;
         float maxHeight = 0;
+
         foreach(Block block in blockList){
             if(block.obj.transform.position.y > maxHeight){
                 maxHeight = block.obj.transform.position.y;
             }
-            totalHeight += block.obj.transform.position.y; 
-            if(block.obj.transform.position.y > 3.5){
-                foreach(Block otherBlock in blockList){
-                    if(block != otherBlock){
-                        float x1 = block.obj.transform.position.x;
-                        float y1 = block.obj.transform.position.y;
-                        float x2 = otherBlock.obj.transform.position.x;
-                        float y2 = otherBlock.obj.transform.position.y;
-                        if(distanceFormula(x1,x2,y1,y2) < 3){
-                            score += block.obj.transform.position.y*2;
-                        }
-                    }
-                }
-            }else if(block.obj.transform.position.y > 0){
+            if(block.obj.transform.position.y > 3.75){
+                score += (block.obj.transform.position.y - 3.5f);
+            }
+            if(block.obj.transform.position.y > 0){
                 float longestDistance = 0;
                 foreach(Block otherBlock in blockList){
-                    if(block != otherBlock && otherBlock.obj.transform.position.y > 0){
-                        float x1 = block.obj.transform.position.x;
-                        float z1 = block.obj.transform.position.z;
-                        float x2 = otherBlock.obj.transform.position.x;
-                        float z2 = otherBlock.obj.transform.position.z;
-                        if(distanceFormula(x1, x2, z1, z2) > longestDistance){
-                            longestDistance = distanceFormula(x2, x2, z1, z2);
-                        }
+                    if(block == otherBlock){
+                        continue;
+                    }
+                    float x1 = block.obj.transform.position.x;
+                    float z1 = block.obj.transform.position.z;
+                    float x2 = otherBlock.obj.transform.position.x;
+                    float z2 = otherBlock.obj.transform.position.z;
+                    if(distanceFormula(x1, x2, z1, z2) > longestDistance){
+                        longestDistance = distanceFormula(x2, x2, z1, z2);
                     }
                 }
-                if(longestDistance<4){
-                    score += 2;
-                 }
+                if(longestDistance < 4){
+                    score += 1.0f;
+                }
             }
-         }
-
-        score += maxHeight*3;
-
-        float averageHeight = totalHeight/dnaSize;
-        if(averageHeight > 3.5){
-            score += 2;
         }
+        score += maxHeight-3.5f;
 
-        score /= targetHeight;
+        // float averageHeight = totalHeight/dnaSize;
+        // if(averageHeight > 3.5){
+        //     score += 2;
+        // }
+
+        score /= (targetHeight-3.5f);
         // score = (Mathf.Pow(dnaSize, score) - 1) / (dnaSize - 1);
+        
         Debug.Log("Score:" + score);
         return score;
     }
