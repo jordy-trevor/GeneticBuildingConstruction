@@ -22,7 +22,7 @@ public class BuildTower : MonoBehaviour {
     //create a data structure to store how the pieces were placed
     List<Block> blockList = new List<Block>();
 
-     private GeneticAlgorithm<List<Block>> ga = null;
+     private GeneticAlgorithm<Block> ga = null;
     //  private System.Random random;
 
     
@@ -35,7 +35,8 @@ public class BuildTower : MonoBehaviour {
         int bb2c = buildingBlock2Count;
         int bb3c = buildingBlock3Count;
         random = new System.Random();
-        ga = new GeneticAlgorithm<List<Block>>(populationSize, targetHeight, random, getRandomPos, FitnessFunction, elitism, mutationRate);
+        ga = new GeneticAlgorithm<Block>(populationSize, targetHeight, random, getRandomPos, FitnessFunction, elitism, mutationRate);
+        ga.NewGeneration();
         // run as long as we still have materials to use
         while ( bb1c > 0 || bb2c > 0 || bb3c > 0)
         {
@@ -133,16 +134,31 @@ public class BuildTower : MonoBehaviour {
         }
 	}
 
-    private List<int> getRandomPos()
+    private Block getRandomPos()
     {
-        List<int> newList = new List<int>();
-        int xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
-        int ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
-        int zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
-        newList.Add(xpos);
-        newList.Add(ypos);
-        newList.Add(zpos);  
-        return newList;
+        bool tryAgain = true;
+        int xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, zrot = 0;
+        GameObject obj = null;
+        while (tryAgain)
+        {
+            // place at random postions, with random rotations
+            // make sure its ontop of earthquake platform
+            xpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.x / 2 * -1 + 3, this.transform.localScale.x / 2 - 3));
+            ypos = Mathf.RoundToInt(Random.Range(this.transform.localScale.y / 2 + 3, targetHeight + 5));
+            zpos = Mathf.RoundToInt(Random.Range(this.transform.localScale.z / 2 * -1 + 3, this.transform.localScale.z / 2 - 3));
+            // IMPORTANT: maybe we shouldn't randomize rotations. Makes it much harder. 
+            xrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            yrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            zrot = Mathf.RoundToInt(Random.Range(0.0f, 0.0f));
+            obj = Instantiate(buildingBlock1, new Vector3(xpos, ypos, zpos), Quaternion.Euler(xrot, yrot, zrot));
+            // check if new positioning is overlapping with any other block. If so, try to place it again. 
+            if (!obj.GetComponent<CollisionDetection>().isColliding)
+            {
+                tryAgain = false;
+            }
+        }
+        Block newBlock = new Block("buildingBlock", obj, xpos, ypos, zpos, xrot, yrot, zrot);
+        return newBlock;
     }
     // spawns the blocks in the blockList into the scene
     public void CreateTower(List<Block> blockList)
@@ -167,7 +183,7 @@ public class BuildTower : MonoBehaviour {
     //output: float score - a fitness score of the current blockList which the sum of the heights
     private float FitnessFunction(int index){
         float score = 0;
-        DNA<List<Block>> dna = ga.Population[index];
+        DNA<Block> dna = ga.Population[index];
 
         // foreach(Block block in dna.Genes[index]){
         //     score += block.obj.transform.position.y;
@@ -179,14 +195,14 @@ public class BuildTower : MonoBehaviour {
     //function: FitnessFunction(List<Block> blockList)
     //input: List<Block> blockList - a list of blocks
     //output: float score - a fitness score of the current blockList which the sum of the heights
-    private float FitnessFunction(List<Block> blockList){
-        float score = 0;
-        foreach(Block block in blockList){
-            score += block.obj.transform.position.y;
-        }
+//    private float FitnessFunction(List<Block> blockList){
+//        float score = 0;
+//        foreach(Block block in blockList){
+//            score += block.obj.transform.position.y;
+//        }
 
-        return score;
-    }
+//        return score;
+//    }
 }
 
 public class Block

@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
 
-public class DNA<T>
+public class DNA<Block>
 {
-	public List<int>[] Genes { get; private set; }
+	public Block[] Genes { get; private set; }
 	public float Fitness { get; private set; }
 
 	private Random random;
-	private Func<List<int>> getRandomGene;
+	private Func<Block> getRandomGene;
 	private Func<int, float> fitnessFunction;
 
-	public DNA(int size, Random random, Func<List<int>> getRandomGene, Func<int, float> fitnessFunction, bool shouldInitGenes = true)
+	public DNA(int size, Random random, Func<Block> getRandomGene, Func<int, float> fitnessFunction, bool shouldInitGenes = true)
 	{
-		Genes = new List<int> [size];
+		Genes = new Block [size];
 		this.random = random;
 		this.getRandomGene = getRandomGene;
 		this.fitnessFunction = fitnessFunction;
@@ -32,18 +32,18 @@ public class DNA<T>
 		return Fitness;
 	}
 
-	public DNA<T> Crossover(DNA<T> otherParent)
+	public DNA<Block> Crossover(DNA<Block> otherParent)
 	{
-		DNA<T> child = new DNA<T>(Genes.Length, random, getRandomGene, fitnessFunction, shouldInitGenes: false);
+		DNA<Block> child = new DNA<Block>(Genes.Length, random, getRandomGene, fitnessFunction, shouldInitGenes: false);
 
-		for (int i = 0; i < Genes.Length; i++)
-		{
-			for( int j = 0 ; j < 3; j++)
-			{
-				child.Genes[i][j] = random.NextDouble() < 0.5 ? Genes[i][j] : otherParent.Genes[i][j];
-			}
+		//for (int i = 0; i < Genes.Length; i++)
+		//{
+		//	for( int j = 0 ; j < 3; j++)
+		//	{
+		//		child.Genes[i][j] = random.NextDouble() < 0.5 ? Genes[i][j] : otherParent.Genes[i][j];
+		//	}
 			
-		}
+		//}
 
 		return child;
 	}
