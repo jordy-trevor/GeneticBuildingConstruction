@@ -36,14 +36,10 @@ public class DNA<Block>
 	{
 		DNA<Block> child = new DNA<Block>(Genes.Length, random, getRandomGene, fitnessFunction, shouldInitGenes: false);
 
-		//for (int i = 0; i < Genes.Length; i++)
-		//{
-		//	for( int j = 0 ; j < 3; j++)
-		//	{
-		//		child.Genes[i][j] = random.NextDouble() < 0.5 ? Genes[i][j] : otherParent.Genes[i][j];
-		//	}
-			
-		//}
+		for (int i = 0; i < Genes.Length; i++)
+		{
+				child.Genes[i] = random.NextDouble() < 0.5 ? Genes[i] : otherParent.Genes[i];
+		}
 
 		return child;
 	}

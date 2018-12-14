@@ -54,6 +54,7 @@ public class BuildTower : MonoBehaviour
         if (Time.time > timeThreshold)
         {
             Debug.Log(Time.time);
+            RemoveAllBlocks(blockList);
             ga.NewGeneration();
             if (ga.BestFitness >= 50)
             {
@@ -187,6 +188,13 @@ public class BuildTower : MonoBehaviour
         }
     }
 
+    public void RemoveAllBlocks(List<Block> blockList)
+    {
+        foreach (Block b in blockList)
+        {
+            Destroy(b.obj);
+        }
+    }
     private Block getRandomBlock()
     {
         bool tryAgain = true;
