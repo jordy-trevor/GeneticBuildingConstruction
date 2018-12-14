@@ -184,6 +184,14 @@ public class BuildTower : MonoBehaviour {
         }
     }
 
+    public void RemoveAllBlocks(List<Block> blockList)
+    {
+        foreach (Block b in blockList)
+        {
+            Destroy(b.obj);
+        }
+    }
+
     private Block getRandomPos(){
         Block randomBlock = null;
         // List<Block> randomBlockList = null;
