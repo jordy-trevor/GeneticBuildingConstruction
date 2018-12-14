@@ -1,26 +1,31 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class DNA<T>
+public class DNA<Block>
 {
-	public T[] Genes { get; private set; }
+	public List<Block> Genes { get; private set; }
 	public float Fitness { get; private set; }
+	public int geneSize;
 
-	private Random random;
-	private Func<T> getRandomGene;
+	private System.Random random;
+	private Func<Block> getRandomGene;
 	private Func<int, float> fitnessFunction;
 
-	public DNA(int size, Random random, Func<T> getRandomGene, Func<int, float> fitnessFunction, bool shouldInitGenes = true)
+	public DNA(int size, System.Random random, Func<Block> getRandomGene, Func<int, float> fitnessFunction, bool shouldInitGenes = true)
 	{
-		Genes = new T[size];
+		Genes = new List<Block>();
 		this.random = random;
 		this.getRandomGene = getRandomGene;
 		this.fitnessFunction = fitnessFunction;
+		this.geneSize = size;
 
 		if (shouldInitGenes)
 		{
-			for (int i = 0; i < Genes.Length; i++)
+			for (int i = 0; i < geneSize; i++)
 			{
-				Genes[i] = getRandomGene();
+				Genes.Add(getRandomGene());
 			}
 		}
 	}
@@ -31,11 +36,11 @@ public class DNA<T>
 		return Fitness;
 	}
 
-	public DNA<T> Crossover(DNA<T> otherParent)
+	public DNA<Block> Crossover(DNA<Block> otherParent)
 	{
-		DNA<T> child = new DNA<T>(Genes.Length, random, getRandomGene, fitnessFunction, shouldInitGenes: false);
+		DNA<Block> child = new DNA<Block>(geneSize, random, getRandomGene, fitnessFunction, shouldInitGenes: false);
 
-		for (int i = 0; i < Genes.Length; i++)
+		for (int i = 0; i < geneSize; i++)
 		{
 			child.Genes[i] = random.NextDouble() < 0.5 ? Genes[i] : otherParent.Genes[i];
 		}
@@ -45,7 +50,7 @@ public class DNA<T>
 
 	public void Mutate(float mutationRate)
 	{
-		for (int i = 0; i < Genes.Length; i++)
+		for (int i = 0; i < geneSize; i++)
 		{
 			if (random.NextDouble() < mutationRate)
 			{
