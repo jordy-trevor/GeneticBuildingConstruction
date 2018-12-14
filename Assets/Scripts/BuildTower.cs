@@ -7,9 +7,9 @@ public class BuildTower : MonoBehaviour {
     // the height our tower hopes to achieve
     [SerializeField] int targetHeight = 10;
     //population size
-    // [SerializeField] int populationSize = 200;
-    // [SerializeField] float mutationRate = 0.01f;
-    // [SerializeField] int elitism = 5;
+    [SerializeField] int populationSize = 200;
+    [SerializeField] float mutationRate = 0.01f;
+    [SerializeField] int elitism = 5;
 
     [Header("Other")]
     [SerializeField] GameObject buildingBlock1;
@@ -28,8 +28,10 @@ public class BuildTower : MonoBehaviour {
     // spawn the random tower once, using update
     //bool initialTowerSpawned = false;
 
-     private GeneticAlgorithm<List<Block>> ga = null;
     //  private System.Random random;
+     private GeneticAlgorithm<Block> ga;
+     private System.Random random;
+     private int timeThreshold = 10;
 
     
 	// Use this for initialization
@@ -43,6 +45,20 @@ public class BuildTower : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //Debug.Log(FitnessFunction(blockList).ToString());
+        Debug.Log(FitnessFunction(blockList).ToString());
+        if (Time.time > timeThreshold)
+        {
+            Debug.Log(Time.time);
+            ga.NewGeneration();
+            // if(ga.BestFitness == )
+
+            timeThreshold += 10;
+        }
+        //IMPORTANT: this is just for testing purposes. Remove once not needed
+        if (Input.GetKeyDown("space"))
+        {
+            CreateTower(blockList);
+        }
 
         //IMPORTANT: this is just for testing purposes. Remove once not needed
         if (Input.GetKeyDown("space"))
@@ -150,21 +166,6 @@ public class BuildTower : MonoBehaviour {
 
 	}
 
-    // create random tower
-    // spawns in blocks specified in a completely random way. Used at the very beginning of the algorithm. 
-    public void CreateRandomTower()
-    {
-
-        //random = new System.Random();
-       
-
-        // run as long as we still have materials to use
-        while (bb1c > 0 || bb2c > 0 || bb3c > 0)
-        {
-            
-        }
-    }
-
     // spawns the blocks in the blockList into the scene
     public void CreateTower(List<Block> blockList)
     {
@@ -183,16 +184,23 @@ public class BuildTower : MonoBehaviour {
         }
     }
 
+    private Block getRandomPos(){
+        Block randomBlock = null;
+        // List<Block> randomBlockList = null;
+        // return randomBlockList;
+        return randomBlock;
+    }
+
     //function: FitnessFunction(int index)
     //input: int index - the index of blockList in ga Population
     //output: float score - a fitness score of the current blockList which the sum of the heights
     private float FitnessFunction(int index){
         float score = 0;
-        DNA<List<Block>> dna = ga.Population[index];
+        DNA<Block> dna = ga.Population[index];
 
-        // foreach(Block block in dna.Genes[index]){
-        //     score += block.obj.transform.position.y;
-        // }
+        foreach(Block block in dna.Genes){
+            score += block.obj.transform.position.y;
+        }
         return score;
     }
 
